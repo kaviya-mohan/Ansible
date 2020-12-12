@@ -1,0 +1,16 @@
+---
+
+-
+
+ hosts: dev
+ tasks:
+        - name: Register example
+          command: hostname -a
+          register: hostname_output
+          when: ansible_distribution == "Ubuntu"
+
+        - name: Show hostname_output
+          debug:
+                  var: hostname_output
+
+...      
