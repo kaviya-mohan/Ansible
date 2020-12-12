@@ -1,0 +1,23 @@
+---
+
+-
+  hosts: dev
+  become: yes
+  tasks:
+          - name: Register the version
+            command: hostname -s
+            when:
+                    - ansible_distribution == "Ubuntu"
+                    - ansible_distribution_major_version | int >= 10
+            register: command_register 
+
+
+          - name: install patch when changed
+            apt:
+                    name: patch
+                    state: present
+            when: command_register.changed
+
+...
+
+
