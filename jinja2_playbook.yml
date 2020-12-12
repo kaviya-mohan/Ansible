@@ -1,0 +1,16 @@
+---
+-
+ hosts: dev
+
+ tasks:
+         - name: Ansible jinja2 for 
+           debug:
+                   msg: >
+                        --== Ansible Jinja2 for statement ==-
+
+                        {# Comment -#}
+                        {% for entry in range(1, 11) -%}
+                           {{ entry }}
+                        {% endfor %}
+
+...
