@@ -1,0 +1,14 @@
+---
+-
+ hosts: dev 
+ vars_prompt:
+         name: variable
+         prompt: enter any value which is to be printed
+         private: false
+ tasks:
+         - name: To print the variable
+           debug:
+                   msg: "the value of your variable is {{ variable }}"
+
+...
+
