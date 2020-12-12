@@ -1,0 +1,53 @@
+---
+
+-
+ hosts: dev
+ gather_facts: false
+ 
+ vars_files:
+         - vault_var.yml
+ tasks:
+         - name: Create a Sec gruop in AWS for SSH and HTTP access
+           ec2_group:
+                   aws_access_key: "{{ec2_access_key}}" 
+                   aws_secret_key: "{{ec2_secret_key}}" 
+                   name: ansible
+                   description: Ansible Security Group
+                   region: us-east-1
+                   rules:
+                           - proto: tcp
+                             from_port: 80
+                             to_port: 80
+                             cidr_ip: 0.0.0.0/0
+                           - proto: tcp
+                             from_port: 22
+                             to_port: 22
+                             cidr_ip: 0.0.0.0/0
+         - name: Provision a set of instances
+           ec2:
+               aws_access_key: "{{ec2_access_key}}"
+               aws_secret_key: "{{ec2_secret_key}}"
+               key_name: new_aws_pair_key 
+               group: ansible
+               instance_type: t2.micro
+               image: ami-00ddb0e5626798373 
+               region: us-east-1
+               wait: true
+               exact_count: 2
+               count_tag:
+                       Name: Webservers
+               instance_tags:
+                       Name: Ansible
+           register: ec2
+        
+         - name: Add all instance public ip to host group
+           add_host:
+                    hostname: "{{ item.public_ip }}"
+                    groups: ansiblehosts
+           with_items: "{{ ec2.instances }}"
+
+         - name: Show Group
+           debug:
+                    var: groups.ansiblehosts
+
+...
