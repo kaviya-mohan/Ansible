@@ -1,0 +1,31 @@
+---
+-
+ hosts: dev
+ vars:
+         motd_ubuntu: "Welcome to my ubuntu machine!!!!!"
+         motd_amazon: "Welcome to amazon machine!"
+ tasks:
+        - name: configure a MOTD(message of the day)
+          copy:
+                content: "{{ motd_ubuntu }}" 
+                dest: /tmp/motd
+          notify: MOTD changed
+          when: ansible_distribution == "Ubuntu"
+
+        - name: configure a MOTD(message of the day)
+          copy:
+                content: "{{ motd_amazon }}"
+                dest: /tmp/motd
+          notify: MOTD changed
+          when: ansible_distribution == "Amazon"
+  
+        - name: Distribution
+          debug:
+                msg: "{{ ansible_distribution }}"
+ handlers:
+        - name: MOTD changed
+          debug: 
+            msg: The MOTD was changed
+
+...
+
